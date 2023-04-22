@@ -15,6 +15,18 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+      - name: Authenticate with GitHub
+        uses: wei/oauth2-action@v1
+        id: github_auth
+        with:
+          auth_url: https://github.com/login/oauth/authorize
+          token_url: https://github.com/login/oauth/access_token
+          client_id: ${{ secrets.GITHUB_CLIENT_ID }}
+          client_secret: ${{ secrets.GITHUB_CLIENT_SECRET }}
+          scope: repo
+          callback_url: https://tools.spdx.org/oauth/complete/github
       - name: Create License Files
         run: |
           python license-files.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
